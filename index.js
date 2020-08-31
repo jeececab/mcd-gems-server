@@ -11,6 +11,7 @@ const typeDefs = require('./graphql/typeDefs');
 
 const startServer = async () => {
   const app = express();
+  app.set('trust proxy', 1);
 
   const RedisStore = connectRedis(session);
   const redisClient = redis.createClient();
@@ -41,7 +42,11 @@ const startServer = async () => {
   const apolloServer = new ApolloServer({
     typeDefs,
     resolvers,
-    context: ({ req, res }) => ({ req, res })
+    context: ({ req, res }) => ({
+      req,
+      res,
+      auth: req.session.userId
+    })
   });
 
   apolloServer.applyMiddleware({ app, cors: false });

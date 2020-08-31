@@ -1,10 +1,6 @@
 const { gql } = require('apollo-server-express');
 
 const typeDefs = gql`
-  type Query {
-    users: [User]
-  }
-
   type User {
     id: ID!
     name: String!
@@ -13,10 +9,19 @@ const typeDefs = gql`
     age: Int
     avatar: String
   }
-
+  
   type UserResponse {
     user: User
     error: String
+  }
+
+  type UsersResponse {
+    users: [User]
+    error: String
+  }
+
+  type Query {
+    getUsers: UsersResponse!
   }
 
   type Mutation {
