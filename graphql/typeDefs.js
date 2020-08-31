@@ -15,13 +15,8 @@ const typeDefs = gql`
     error: String
   }
 
-  type UsersResponse {
-    users: [User]
-    error: String
-  }
-
   type Query {
-    getUsers: UsersResponse!
+    me: UserResponse!
   }
 
   type Mutation {

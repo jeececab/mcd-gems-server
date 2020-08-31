@@ -3,11 +3,11 @@ const argon2 = require('argon2');
 
 const resolvers = {
   Query: {
-    getUsers: async (_, {}, { auth }) => {
+    me: async (_, {}, { auth, req }) => {
       if (!auth) return { error: 'Not authenticated' };
 
-      const users = await User.find();
-      return { users };
+      const user = await User.findOne({ _id: req.session.userId });
+      return { user };
     }
   },
   Mutation: {
