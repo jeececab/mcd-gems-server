@@ -11,10 +11,10 @@ const typeDefs = require('./graphql/typeDefs');
 
 const startServer = async () => {
   const app = express();
-  
+
   const RedisStore = connectRedis(session);
   const redisClient = redis.createClient();
-  
+
   app.set('trust proxy', 1);
   app.use(
     cors({
@@ -22,7 +22,7 @@ const startServer = async () => {
       credentials: true
     })
   );
-    
+
   app.use(
     session({
       name: 'qid',
@@ -31,7 +31,7 @@ const startServer = async () => {
         maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
         httpOnly: true,
         sameSite: 'lax', // csrf
-        secure: process.env.ENV === 'production',
+        secure: process.env.ENV === 'production'
         //domain: 'localhost:5000'
       },
       saveUninitialized: false,

@@ -1,13 +1,27 @@
-const User = require('../models/User');
 const argon2 = require('argon2');
+const User = require('../models/User');
+const Drill = require('../models/Drill');
 
 const resolvers = {
   Query: {
     me: async (_, {}, { auth, req }) => {
-      if (!auth) return { error: 'Not authenticated' };
+      if (!auth) throw new Error('Not authenticated');
 
       const user = await User.findOne({ _id: req.session.userId });
-      return { user };
+
+      if (req.body.query.includes('drills')) {
+        const drills = await Drill.find({});
+        user.drills = drills;
+      }
+
+      return user;
+    },
+    getMyDrills: async (_, {}, { auth, req }) => {
+      if (!auth) throw new Error('Not authenticated');
+
+      const drills = await Drill.find({ user_id: req.session.userId });
+
+      return drills;
     }
   },
   Mutation: {
@@ -20,7 +34,7 @@ const resolvers = {
         await user.save();
 
         req.session.userId = user.id;
-        return { user };
+        return user;
       } catch (e) {
         let errorMessage;
 
@@ -32,7 +46,7 @@ const resolvers = {
           errorMessage = e.message;
         }
 
-        return { error: errorMessage };
+        throw new Error(errorMessage);
       }
     },
 
@@ -45,9 +59,30 @@ const resolvers = {
         if (!valid) throw new Error('Invalid credentials');
 
         req.session.userId = user.id;
-        return { user };
+        return user;
       } catch (e) {
-        return { error: e.message };
+        throw new Error(e.message);
+      }
+    },
+
+    createDrill: async (_, { title, description }, { auth, req }) => {
+      try {
+        if (!auth) return { error: 'Not authenticated' };
+
+        const drill = new Drill({ title, description, user_id: req.session.userId });
+        await drill.save();
+
+        return { drill };
+      } catch (e) {
+        let errorMessage;
+
+        if (e.message.includes('duplicate') && e.message.includes('title')) {
+          errorMessage = 'A drill already exists with that title';
+        } else {
+          errorMessage = e.message;
+        }
+
+        throw new Error(errorMessage);
       }
     }
   }

@@ -4,8 +4,7 @@
   "description": "myclimbingdrills-api",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
-    "mongodb": "/home/jcseguin/mongodb/bin/mongod --dbpath=/home/jcseguin/mongodb-data"
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",

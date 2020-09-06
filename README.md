@@ -27,8 +27,7 @@ There are two repos for this project, [one for the server](https://github.com/je
 1. Install and setup a local MongoDB instance
 2. Install and setup a local Redis instance
 3. Clone the repo and run `npm install`
-4. Run `npm run mongodb` to start your local MongoDB instance
-5. Run `npm run dev` to start the server.
+4. Run `npm run dev` to start the server.
 
 ### Client
 

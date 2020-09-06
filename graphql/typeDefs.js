@@ -8,20 +8,26 @@ const typeDefs = gql`
     bio: String
     age: Int
     avatar: String
+    drills: [Drill]
   }
-  
-  type UserResponse {
+
+  type Drill {
+    id: ID!
+    title: String!
+    description: String
+    user_id: ID
     user: User
-    error: String
   }
 
   type Query {
-    me: UserResponse!
+    me: User
+    getMyDrills: [Drill]
   }
 
   type Mutation {
-    registerUser(name: String!, email: String!, password: String!): UserResponse!
-    loginUser(email: String!, password: String!): UserResponse!
+    registerUser(name: String!, email: String!, password: String!): User
+    loginUser(email: String!, password: String!): User
+    createDrill(title: String!, description: String): Drill
   }
 `;
 
