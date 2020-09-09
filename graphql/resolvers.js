@@ -1,4 +1,5 @@
 const argon2 = require('argon2');
+const sharp = require('sharp');
 const User = require('../models/User');
 const Drill = require('../models/Drill');
 
@@ -65,10 +66,36 @@ const resolvers = {
       }
     },
 
-    createDrill: async (_, { title, description }, { auth, req }) => {
-      try {
-        if (!auth) return { error: 'Not authenticated' };
+    uploadAvatar: async (_, { file }, { auth, req }) => {
+      if (!auth) return { error: 'Not authenticated' };
 
+      try {
+        const { filename, createReadStream } = await file;
+
+        if (!filename.match(/\.(jpg|jpeg|png)$/)) throw new Error('Wrong file format');
+
+        const stream = createReadStream();
+        const chunks = [];
+        for await (let chunk of stream) {
+          chunks.push(chunk);
+        }
+        const buffer = Buffer.concat(chunks);
+        const croppedBuffer = await sharp(buffer).png().resize({ width: 250, height: 250 }).toBuffer();
+        const base64 = croppedBuffer.toString('base64');
+
+        await User.updateOne({ _id: req.session.userId }, { avatar: base64 });
+        
+        const user = await User.findOne({ _id: req.session.userId });
+        return user;
+      } catch (e) {
+        throw new Error(e.message);
+      }
+    },
+
+    createDrill: async (_, { title, description }, { auth, req }) => {
+      if (!auth) return { error: 'Not authenticated' };
+
+      try {
         const drill = new Drill({ title, description, user_id: req.session.userId });
         await drill.save();
 
