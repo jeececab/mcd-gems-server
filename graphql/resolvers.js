@@ -66,6 +66,21 @@ const resolvers = {
       }
     },
 
+    logoutUser: async (_, {}, { req, res }) => {
+      return new Promise(resolve =>
+        req.session.destroy(e => {
+          res.clearCookie('qid');
+          if (e) {
+            console.log(e);
+            resolve(false);
+            return;
+          }
+
+          resolve(true);
+        })
+      );
+    },
+
     uploadAvatar: async (_, { file }, { auth, req }) => {
       if (!auth) return { error: 'Not authenticated' };
 
@@ -84,7 +99,7 @@ const resolvers = {
         const base64 = croppedBuffer.toString('base64');
 
         await User.updateOne({ _id: req.session.userId }, { avatar: base64 });
-        
+
         const user = await User.findOne({ _id: req.session.userId });
         return user;
       } catch (e) {

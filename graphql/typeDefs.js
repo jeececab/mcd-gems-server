@@ -34,6 +34,7 @@ const typeDefs = gql`
   type Mutation {
     registerUser(name: String!, email: String!, password: String!): User
     loginUser(email: String!, password: String!): User
+    logoutUser: Boolean
     uploadAvatar(file: Upload!): User!
     createDrill(title: String!, description: String): Drill
   }
