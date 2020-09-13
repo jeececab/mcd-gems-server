@@ -14,6 +14,8 @@
 
 Note: it's mostly a personal project of mine to test some new stacks and technologies. I did a few different versions over the past few months, but I think this version will be my final chosen stack (GEMS - GraphQL, Express, MongoDB, Svelte)
 
+Other note: I will start in mobile first, so sorry for the broken design on desktop!
+
 If anybody's eventually interested in participating or see potential in that app, please contact me.
 
 ## Repos
