@@ -4,25 +4,22 @@ const User = require('../models/User');
 const Drill = require('../models/Drill');
 
 const resolvers = {
+  User: {
+    drills: async (_, {}, { auth, req }) => {
+      if (!auth) throw new Error('Not authenticated');
+
+      const drills = await Drill.find({ user_id: req.session.userId });
+
+      return drills;
+    }
+  },
   Query: {
     me: async (_, {}, { auth, req }) => {
       if (!auth) throw new Error('Not authenticated');
 
       const user = await User.findOne({ _id: req.session.userId });
 
-      if (req.body.query.includes('drills')) {
-        const drills = await Drill.find({});
-        user.drills = drills;
-      }
-
       return user;
-    },
-    getMyDrills: async (_, {}, { auth, req }) => {
-      if (!auth) throw new Error('Not authenticated');
-
-      const drills = await Drill.find({ user_id: req.session.userId });
-
-      return drills;
     }
   },
   Mutation: {

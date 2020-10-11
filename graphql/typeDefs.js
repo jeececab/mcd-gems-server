@@ -29,7 +29,6 @@ const typeDefs = gql`
 
   type Query {
     me: User
-    getMyDrills: [Drill]
   }
 
   type Mutation {
