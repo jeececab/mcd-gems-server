@@ -104,6 +104,22 @@ const resolvers = {
       }
     },
 
+    uploadAccountInfo: async (_, { name, email, bio }, { auth, req }) => {
+      if (!auth) return { error: 'Not authenticated' };
+
+      try {
+        const updatedUser = await User.findByIdAndUpdate(
+          { _id: req.session.userId },
+          { name, email, bio },
+          { new: true }
+        );
+
+        return updatedUser;
+      } catch (e) {
+        throw new Error(e.message);
+      }
+    },
+
     createDrill: async (_, { title, description }, { auth, req }) => {
       if (!auth) return { error: 'Not authenticated' };
 

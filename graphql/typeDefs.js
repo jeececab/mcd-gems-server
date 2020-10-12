@@ -36,6 +36,7 @@ const typeDefs = gql`
     loginUser(email: String!, password: String!): User
     logoutUser: Boolean
     uploadAvatar(file: Upload!): User!
+    uploadAccountInfo(name: String!, email: String!, bio: String!): User!
     createDrill(title: String!, description: String): Drill
   }
 `;
