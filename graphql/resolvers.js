@@ -95,10 +95,24 @@ const resolvers = {
         const croppedBuffer = await sharp(buffer).png().resize({ width: 250, height: 250 }).toBuffer();
         const base64 = croppedBuffer.toString('base64');
 
-        await User.updateOne({ _id: req.session.userId }, { avatar: base64 });
+        const updatedUser = await User.findByIdAndUpdate(
+          { _id: req.session.userId },
+          { avatar: base64 },
+          { new: true }
+        );
 
-        const user = await User.findOne({ _id: req.session.userId });
-        return user;
+        return updatedUser;
+      } catch (e) {
+        throw new Error(e.message);
+      }
+    },
+
+    deleteAvatar: async (_, {}, { auth, req }) => {
+      if (!auth) return { error: 'Not authenticated' };
+
+      try {
+        await User.findByIdAndUpdate({ _id: req.session.userId }, { avatar: null });
+        return true;
       } catch (e) {
         throw new Error(e.message);
       }
