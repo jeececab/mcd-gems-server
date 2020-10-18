@@ -38,6 +38,7 @@ const typeDefs = gql`
     uploadAvatar(file: Upload!): User!
     deleteAvatar: Boolean
     uploadAccountInfo(name: String!, email: String!, bio: String!): User!
+    changePassword(oldPassword: String!, newPassword: String!): Boolean
     createDrill(title: String!, description: String): Drill
   }
 `;

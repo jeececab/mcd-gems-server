@@ -134,6 +134,27 @@ const resolvers = {
       }
     },
 
+    changePassword: async (_, { oldPassword, newPassword }, { auth, req }) => {
+      try {
+        if (!auth) return { error: 'Not authenticated' };
+
+        const user = await User.findOne({ _id: req.session.userId });
+
+        const valid = await argon2.verify(user.password, oldPassword);
+        if (!valid) throw new Error('Invalid credentials');
+
+        if (newPassword.length < 8) throw new Error('Password should have a minimum of 8 characters');
+        const hashedPassword = await argon2.hash(newPassword);
+        user.password = hashedPassword;
+
+        await user.save();
+
+        return true;
+      } catch (e) {
+        throw new Error(e.message);
+      }
+    },
+
     createDrill: async (_, { title, description }, { auth, req }) => {
       if (!auth) return { error: 'Not authenticated' };
 
